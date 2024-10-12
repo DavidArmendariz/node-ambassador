@@ -9,7 +9,7 @@ npm install
 ## Levantar el servidor
 
 ```terminal
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 ## Correr los seeds
