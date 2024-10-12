@@ -16,7 +16,7 @@ services:
     volumes:
       - node_ambassador_dbdata:/var/lib/mysql
     ports:
-      - "33066:3306"
+      - "3306:3306"
 
   redis:
     image: redis
