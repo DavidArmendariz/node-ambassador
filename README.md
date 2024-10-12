@@ -11,3 +11,9 @@ npm install
 ```terminal
 docker-compose up -d
 ```
+
+## Correr los seeds
+
+```terminal
+docker-compose exec -it node-ambassador-backend-1 bash
+```
