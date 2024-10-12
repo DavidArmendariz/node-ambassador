@@ -7,7 +7,6 @@ import { OrderItem } from "../entity/order-item.entity";
 import Stripe from "stripe";
 import { client } from "../index";
 import { User } from "../entity/user.entity";
-import { createTransport } from "nodemailer";
 import { kafkaProducer } from "../kafka/config";
 
 export const Orders = async (req: Request, res: Response) => {
@@ -134,10 +133,6 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
   const user = await getRepository(User).findOne(order.user_id);
 
   await client.zIncrBy("rankings", order.ambassador_revenue, user.name);
-  const transporter = createTransport({
-    host: "host.docker.internal",
-    port: 1025,
-  });
 
   const value = JSON.stringify({
     ...order,
