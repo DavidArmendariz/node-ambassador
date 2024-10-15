@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../entity/user.entity";
-import { client } from "../index";
+import { redisClient } from "../index";
 
 export const Ambassadors = async (req: Request, res: Response) => {
   res.send(
     await getRepository(User).find({
       is_ambassador: true,
-    }),
+    })
   );
 };
 
 export const Rankings = async (req: Request, res: Response) => {
-  const result: string[] = await client.sendCommand([
+  const result: string[] = await redisClient.sendCommand([
     "ZREVRANGEBYSCORE",
     "rankings",
     "+inf",
@@ -32,6 +32,6 @@ export const Rankings = async (req: Request, res: Response) => {
           [name]: parseInt(r),
         };
       }
-    }, {}),
+    }, {})
   );
 };

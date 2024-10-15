@@ -8,12 +8,12 @@ import { createClient } from "redis";
 
 dotenv.config();
 
-export const client = createClient({
+export const redisClient = createClient({
   url: "redis://redis:6379",
 });
 
 createConnection().then(async () => {
-  await client.connect();
+  await redisClient.connect();
 
   const app = express();
 
@@ -27,7 +27,7 @@ createConnection().then(async () => {
         "http://localhost:4000",
         "http://localhost:5000",
       ],
-    }),
+    })
   );
 
   routes(app);

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { Product } from "../entity/product.entity";
-import { client } from "../index";
+import { redisClient } from "../index";
 
 export const Products = async (req: Request, res: Response) => {
   res.send(await getRepository(Product).find());
@@ -30,12 +30,12 @@ export const DeleteProduct = async (req: Request, res: Response) => {
 };
 
 export const ProductsFrontend = async (req: Request, res: Response) => {
-  let products = JSON.parse(await client.get("products_frontend"));
+  let products = JSON.parse(await redisClient.get("products_frontend"));
 
   if (!products) {
     products = await getRepository(Product).find();
 
-    await client.set("products_frontend", JSON.stringify(products), {
+    await redisClient.set("products_frontend", JSON.stringify(products), {
       EX: 1800, //30 min
     });
   }
@@ -44,12 +44,14 @@ export const ProductsFrontend = async (req: Request, res: Response) => {
 };
 
 export const ProductsBackend = async (req: Request, res: Response) => {
-  let products: Product[] = JSON.parse(await client.get("products_frontend"));
+  let products: Product[] = JSON.parse(
+    await redisClient.get("products_frontend")
+  );
 
   if (!products) {
     products = await getRepository(Product).find();
 
-    await client.set("products_frontend", JSON.stringify(products), {
+    await redisClient.set("products_frontend", JSON.stringify(products), {
       EX: 1800, //30 min
     });
   }
@@ -60,7 +62,7 @@ export const ProductsBackend = async (req: Request, res: Response) => {
     products = products.filter(
       (p) =>
         p.title.toLowerCase().indexOf(s) >= 0 ||
-        p.description.toLowerCase().indexOf(s) >= 0,
+        p.description.toLowerCase().indexOf(s) >= 0
     );
   }
 
