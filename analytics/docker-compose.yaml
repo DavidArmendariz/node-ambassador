@@ -1,0 +1,5 @@
+services:
+  email_backend:
+    build: .
+    volumes:
+      - .:/app
