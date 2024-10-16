@@ -22,7 +22,7 @@ import {
   CreateLink,
   GetLink,
   Links,
-  Stats,
+  //Stats,
 } from "./controller/link.controller";
 import {
   ConfirmOrder,
@@ -58,7 +58,7 @@ export const routes = (router: Router) => {
   router.get("/api/ambassador/products/frontend", ProductsFrontend);
   router.get("/api/ambassador/products/backend", ProductsBackend);
   router.post("/api/ambassador/links", AuthMiddleware, CreateLink);
-  router.get("/api/ambassador/stats", AuthMiddleware, Stats);
+  //router.get("/api/ambassador/stats", AuthMiddleware, Stats);
   router.get("/api/ambassador/rankings", AuthMiddleware, Rankings);
 
   // Checkout

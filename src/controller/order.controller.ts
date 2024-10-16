@@ -132,7 +132,16 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 
   const user = await getRepository(User).findOne(order.user_id);
 
-  await client.zIncrBy("rankings", order.ambassador_revenue, user.name);
+  const rankings = JSON.stringify({
+    revenue: order.ambassador_revenue,
+    user: user.name,
+  });
+
+  await kafkaProducer.connect();
+  await kafkaProducer.send({
+    topic: "rankings",
+    messages: [{ value: rankings }],
+  });
 
   const value = JSON.stringify({
     ...order,
