@@ -1,11 +1,12 @@
 import { EachMessagePayload, Kafka } from "kafkajs";
+import { getRepository } from "typeorm";
+import { Ranking } from "./entity/rankings.entity";
 import dotenv from "dotenv";
-import { client } from "./logica";
 
 dotenv.config();
 
 const kafka = new Kafka({
-  clientId: "analytics-consumer",
+  clientId: "email-consumer",
   brokers: [process.env.KAFKA_BROKER],
   ssl: true,
   sasl: {
@@ -15,17 +16,35 @@ const kafka = new Kafka({
   },
 });
 
-const consumer = kafka.consumer({ groupId: "analytics-consumer" });
+const consumer = kafka.consumer({ groupId: "email-consumer" });
 
-const run = async () => {
+export const start_kafka_rankings = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: "rankings" });
+  await consumer.subscribe({ topic: "prueba" });
   await consumer.run({
     eachMessage: async (message: EachMessagePayload) => {
       const data = JSON.parse(message.message.value.toString());
-      await client.zIncrBy("rankings", data.ambassador_revenue, data.name);
+
+      const ranking_repo = getRepository(Ranking);
+      const existing_ranking = await ranking_repo.findOne({
+        where: { user: data.user },
+      });
+
+      if (existing_ranking) {
+        existing_ranking.revenue += Number(data.revenue);
+
+        await ranking_repo.save(existing_ranking);
+        console.log(`Revenue updated for user ${data.user}`);
+      } else {
+        const newRanking = ranking_repo.create({
+          user: data.user,
+          revenue: Number(data.revenue),
+        });
+
+        await ranking_repo.save(newRanking);
+      }
     },
   });
 };
 
-run().then(console.error);
+//run().then(console.error);

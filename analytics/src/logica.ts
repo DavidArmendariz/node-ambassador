@@ -1,53 +1,28 @@
 import { Request, Response } from "express";
 import { createClient } from "redis";
 import { getRepository } from "typeorm";
-import { Link } from "./entity/link.entity";
-import { client } from "./index";
+import { Ranking } from "./entity/rankings.entity";
 
 export const Rankings = async (req: Request, res: Response) => {
-  await client.connect();
+  try {
+    console.log("Rankings endpoint hit");
+    const rankings = getRepository(Ranking);
 
-  const result: string[] = await client.sendCommand([
-    "ZREVRANGEBYSCORE",
-    "rankings",
-    "+inf",
-    "-inf",
-    "WITHSCORES",
-  ]);
-  let name;
+    const ordered_rankings = await rankings.find({
+      order: { revenue: "DESC" },
+    });
 
-  res.send(
-    result.reduce((o, r) => {
-      if (isNaN(parseInt(r))) {
-        name = r;
-        return o;
-      } else {
-        return {
-          ...o,
-          [name]: parseInt(r),
-        };
-      }
-    }, {})
-  );
-};
-
-export const Stats = async (req: Request, res: Response) => {
-  const user = req["user"];
-
-  const links = await getRepository(Link).find({
-    where: { user },
-    relations: ["orders", "orders.order_items"],
-  });
-
-  res.send(
-    links.map((link) => {
-      const orders = link.orders.filter((o) => o.complete);
-
+    const formatted_rankings = ordered_rankings.reduce((acc, ranking) => {
       return {
-        code: link.code,
-        count: orders.length,
-        revenue: orders.reduce((s, o) => s + o.ambassador_revenue, 0),
+        ...acc,
+        [ranking.user]: ranking.revenue,
       };
-    })
-  );
+    }, {});
+
+    res.send(formatted_rankings);
+  } catch (error) {
+    res.status(500).send("Error calculando los rankings");
+  }
 };
+
+export const Stats = async (req: Request, res: Response) => {};

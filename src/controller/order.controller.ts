@@ -139,8 +139,31 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 
   await kafkaProducer.connect();
   await kafkaProducer.send({
-    topic: "rankings",
+    topic: "prueba",
     messages: [{ value: rankings }],
+  });
+
+  const link = await getRepository(Link).findOne({
+    where: { code: order.code },
+  });
+
+  const stats = JSON.stringify({
+    user: user.id,
+    links: {
+      code: link.code,
+      order: {
+        complete: true,
+        ambassador_revenue: order.order_items.map((item) => ({
+          product_id: item.id,
+          ambassador_revenue: item.ambassador_revenue,
+        })),
+      },
+    },
+  });
+
+  await kafkaProducer.send({
+    topic: "stats",
+    messages: [{ value: stats }],
   });
 
   const value = JSON.stringify({
@@ -149,7 +172,6 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
     ambassador_revenue: order.ambassador_revenue,
   });
 
-  await kafkaProducer.connect();
   await kafkaProducer.send({ topic: "default", messages: [{ value }] });
 
   res.send({
