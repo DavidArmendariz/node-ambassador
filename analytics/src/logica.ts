@@ -2,10 +2,7 @@ import { Request, Response } from "express";
 import { createClient } from "redis";
 import { getRepository } from "typeorm";
 import { Link } from "./entity/link.entity";
-
-export const client = createClient({
-  url: "redis://redis:6379",
-});
+import { client } from "./index";
 
 export const Rankings = async (req: Request, res: Response) => {
   await client.connect();

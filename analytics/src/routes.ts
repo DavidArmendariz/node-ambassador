@@ -4,7 +4,6 @@ import { Router } from "express";
 
 export const routes = (router: Router) => {
   router.get("/", (req, res) => res.send("ok"));
-
-  router.get("/api/analytics/rankings", Rankings);
-  router.get("/api/analytics/stats", Stats);
+  router.get("/analytics/rankings", Rankings);
+  router.get("/analytics/stats", Stats);
 };

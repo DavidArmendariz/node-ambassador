@@ -1,5 +1,5 @@
 services:
-  email_backend:
+  analytics_adapter:
     build: .
     volumes:
       - .:/app

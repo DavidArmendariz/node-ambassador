@@ -11,13 +11,17 @@
   "license": "ISC",
   "dependencies": {
     "analytics-adapter": "file:",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.17.1",
     "kafkajs": "^2.2.4",
-    "nodemailer": "^6.9.15"
+    "mysql2": "^2.3.3",
+    "redis": "^3.1.2",
+    "typeorm": "^0.2.41"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
     "@types/kafkajs": "^1.9.0",
-    "@types/nodemailer": "^6.4.16",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
