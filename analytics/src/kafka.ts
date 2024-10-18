@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const kafka = new Kafka({
-  clientId: "email-consumer",
+  clientId: "rankings-consumer",
   brokers: [process.env.KAFKA_BROKER],
   ssl: true,
   sasl: {
@@ -16,7 +16,7 @@ const kafka = new Kafka({
   },
 });
 
-const consumer = kafka.consumer({ groupId: "email-consumer" });
+const consumer = kafka.consumer({ groupId: "rankings-consumer" });
 
 export const start_kafka_rankings = async () => {
   await consumer.connect();

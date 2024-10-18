@@ -30,7 +30,7 @@ export const Stat = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.user_id, 10);
   console.log(userId);
   const statsRepository = getRepository(Stats);
-  const userStats = await statsRepository.findOne({
+  const userStats = await statsRepository.find({
     where: { user_id: userId },
   });
 

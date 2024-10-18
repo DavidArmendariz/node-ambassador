@@ -34,7 +34,7 @@ const calculation = async (stats) => {
 };
 
 const kafka = new Kafka({
-  clientId: "email-consumer",
+  clientId: "stats-consumer",
   brokers: [process.env.KAFKA_BROKER],
   ssl: true,
   sasl: {
@@ -44,7 +44,7 @@ const kafka = new Kafka({
   },
 });
 
-const consumer = kafka.consumer({ groupId: "email-consumer" });
+const consumer = kafka.consumer({ groupId: "stats-consumer" });
 
 export const start_kafka_stats = async () => {
   await consumer.connect();

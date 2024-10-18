@@ -8,6 +8,8 @@ import Stripe from "stripe";
 import { client } from "../index";
 import { User } from "../entity/user.entity";
 import { kafkaProducer } from "../kafka/config";
+import { kafkaProducerRankings } from "../kafka/rankings";
+import { kafkaProducerStats } from "../kafka/stats";
 
 export const Orders = async (req: Request, res: Response) => {
   const orders = await getRepository(Order).find({
@@ -137,8 +139,8 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
     user: user.name,
   });
 
-  await kafkaProducer.connect();
-  await kafkaProducer.send({
+  await kafkaProducerRankings.connect();
+  await kafkaProducerRankings.send({
     topic: "rankings",
     messages: [{ value: rankings }],
   });
@@ -161,7 +163,8 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
     },
   });
 
-  await kafkaProducer.send({
+  await kafkaProducerStats.connect();
+  await kafkaProducerStats.send({
     topic: "stats",
     messages: [{ value: stats }],
   });
@@ -172,6 +175,7 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
     ambassador_revenue: order.ambassador_revenue,
   });
 
+  await kafkaProducer.connect();
   await kafkaProducer.send({ topic: "default", messages: [{ value }] });
 
   res.send({
