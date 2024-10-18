@@ -139,7 +139,7 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 
   await kafkaProducer.connect();
   await kafkaProducer.send({
-    topic: "prueba",
+    topic: "rankings",
     messages: [{ value: rankings }],
   });
 

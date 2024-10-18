@@ -20,7 +20,7 @@ const consumer = kafka.consumer({ groupId: "email-consumer" });
 
 export const start_kafka_rankings = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: "prueba" });
+  await consumer.subscribe({ topic: "rankings" });
   await consumer.run({
     eachMessage: async (message: EachMessagePayload) => {
       const data = JSON.parse(message.message.value.toString());

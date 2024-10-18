@@ -4,6 +4,7 @@ import { routes } from "./routes";
 import { createClient } from "redis";
 import cors from "cors";
 import { start_kafka_rankings } from "./kafka";
+import { start_kafka_stats } from "./kafka_stats";
 
 // export const client = createClient({
 //   url: "redis://redis:6379",
@@ -20,6 +21,7 @@ createConnection()
     routes(app);
 
     await start_kafka_rankings();
+    await start_kafka_stats();
 
     app.listen(8001, () => {
       console.log("listening to port 8001");

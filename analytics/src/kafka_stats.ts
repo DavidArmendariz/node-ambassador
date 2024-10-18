@@ -7,32 +7,27 @@ dotenv.config();
 
 const calculation = async (stats) => {
   try {
-    const user_id = stats.user;
-    const links = stats.links;
+    const userId = stats.user;
+    const link = stats.links;
 
-    for (const link of links) {
-      const { code, orders } = link;
+    const code = link.code;
+    const order = link.order;
 
-      for (const order of orders) {
-        if (order.complete) {
-          const ambassadorRevenue = order.ambassador_revenue.reduce(
-            (total, item) => total + item.ambassador_revenue,
-            0
-          );
+    if (order.complete) {
+      const ambassadorRevenue = order.ambassador_revenue.reduce(
+        (total, item) => total + item.ambassador_revenue,
+        0
+      );
 
-          const statsRepo = getRepository(Stats);
-          const stat = statsRepo.create({
-            user_id: user_id,
-            link_code: code,
-            ambassador_revenue: ambassadorRevenue,
-          });
-
-          await statsRepo.save(stat);
-        }
-      }
+      const statsRepo = getRepository(Stats);
+      const stat = statsRepo.create({
+        user_id: userId,
+        link_code: code,
+        ambassador_revenue: ambassadorRevenue,
+      });
+      console.log("Data processed and saved successfully");
+      await statsRepo.save(stat);
     }
-
-    console.log("Data processed and saved successfully");
   } catch (error) {
     console.error("Error processing message:", error);
   }
@@ -53,7 +48,7 @@ const consumer = kafka.consumer({ groupId: "email-consumer" });
 
 export const start_kafka_stats = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: "rankings" });
+  await consumer.subscribe({ topic: "stats" });
   await consumer.run({
     eachMessage: async (message: EachMessagePayload) => {
       const data = JSON.parse(message.message.value.toString());

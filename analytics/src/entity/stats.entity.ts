@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("stats")
+@Entity()
 export class Stats {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  user_id: string;
+  user_id: number;
 
   @Column()
   link_code: string;

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { createClient } from "redis";
 import { getRepository } from "typeorm";
 import { Ranking } from "./entity/rankings.entity";
+import { Stats } from "./entity/stats.entity";
 
 export const Rankings = async (req: Request, res: Response) => {
   try {
@@ -25,4 +26,17 @@ export const Rankings = async (req: Request, res: Response) => {
   }
 };
 
-export const Stats = async (req: Request, res: Response) => {};
+export const Stat = async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.user_id, 10);
+  console.log(userId);
+  const statsRepository = getRepository(Stats);
+  const userStats = await statsRepository.findOne({
+    where: { user_id: userId },
+  });
+
+  if (!userStats) {
+    return res.status(404).send("Estadísticas del usuario no encontradas");
+  }
+
+  return res.status(200).json(userStats);
+};
