@@ -176,7 +176,7 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
   });
 
   await kafkaProducer.connect();
-  await kafkaProducer.send({ topic: "default", messages: [{ value }] });
+  await kafkaProducer.send({ topic: "email", messages: [{ value }] });
 
   res.send({
     message: "success",

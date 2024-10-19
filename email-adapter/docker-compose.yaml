@@ -1,5 +1,5 @@
 services:
-  analytics_adapter:
+  email-adapter:
     build: .
     volumes:
       - .:/app

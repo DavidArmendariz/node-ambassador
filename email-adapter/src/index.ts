@@ -5,7 +5,7 @@ import { createTransport } from "nodemailer";
 dotenv.config();
 
 const kafka = new Kafka({
-  clientId: "email-consumer",
+  clientId: "email-consumer-kafka",
   brokers: [process.env.KAFKA_BROKER],
   ssl: true,
   sasl: {
@@ -15,16 +15,18 @@ const kafka = new Kafka({
   },
 });
 
-const consumer = kafka.consumer({ groupId: "email-consumer" });
+const consumer = kafka.consumer({
+  groupId: "email-consumer-kafka",
+});
 
 const transporter = createTransport({
-  host: "host.docker.internal",
+  host: "172.17.0.2",
   port: 1025,
 });
 
 const run = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: "default" });
+  await consumer.subscribe({ topic: "email" });
   await consumer.run({
     eachMessage: async (message: EachMessagePayload) => {
       const order = JSON.parse(message.message.value.toString());
@@ -43,7 +45,6 @@ const run = async () => {
       });
     },
   });
-  transporter.close();
+  await transporter.close();
 };
-
 run().then(console.error);
