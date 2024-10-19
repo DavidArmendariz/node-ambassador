@@ -5,23 +5,17 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - redis
 
   db:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_DATABASE: ambassador
+      MYSQL_DATABASE: users
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - node_ambassador_dbdata:/var/lib/mysql
+      - node_users_dbdata:/var/lib/mysql
     ports:
-      - "7080:3306"
-
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
+      - "7082:3306"
 
 volumes:
-  node_ambassador_dbdata:
+  node_users_dbdata:
