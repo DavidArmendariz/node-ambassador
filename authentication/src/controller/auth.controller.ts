@@ -18,6 +18,8 @@ export const Login = async (req: Request, res: Response) => {
 
   const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
 
+  console.log("FIREBASE_API_KEY:", FIREBASE_API_KEY);
+
   try {
     const response = await axios.post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`,
