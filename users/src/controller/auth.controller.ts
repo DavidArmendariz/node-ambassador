@@ -24,7 +24,7 @@ export const Register = async (req: Request, res: Response) => {
     });
   }
 
-  const user = await getRepository(User).save({
+  const user = await AppDataSource.getRepository(User).save({
     ...body,
     password: await bcryptjs.hash(password, 10),
     is_ambassador: req.path === "/api/ambassador/register",
