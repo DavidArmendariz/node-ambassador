@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
 import { verify } from "jsonwebtoken";
-import { getRepository } from "typeorm";
-import { User } from "../entity/user.entity";
 
 export const AuthMiddleware = async (
   req: Request,
   res: Response,
-  next: Function,
+  next: Function
 ) => {
   try {
     const jwt = req.cookies["jwt"];
@@ -21,8 +19,6 @@ export const AuthMiddleware = async (
 
     const is_ambassador = req.path.indexOf("api/ambassador") >= 0;
 
-    const user = await getRepository(User).findOne(payload.id);
-
     if (
       (is_ambassador && payload.scope !== "ambassador") ||
       (!is_ambassador && payload.scope !== "admin")
@@ -32,7 +28,7 @@ export const AuthMiddleware = async (
       });
     }
 
-    req["user"] = user;
+    req["user_database_id"] = payload.id;
 
     next();
   } catch (e) {

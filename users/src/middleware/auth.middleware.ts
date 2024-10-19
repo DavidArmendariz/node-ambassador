@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { verify } from "jsonwebtoken";
-import { User } from "../entity/user.entity";
 
 export const AuthMiddleware = async (
   req: Request,
@@ -28,6 +27,8 @@ export const AuthMiddleware = async (
         message: "unauthorized",
       });
     }
+
+    req["user_database_id"] = payload.id;
 
     next();
   } catch (e) {
