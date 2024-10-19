@@ -32,12 +32,12 @@ export const Register = async (req: Request, res: Response) => {
     is_ambassador: req.path === "/api/ambassador/register",
   });
 
-  delete user.password;
-
   const value = JSON.stringify({
     event: "create",
     user_data: user,
   });
+
+  delete user.password;
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
   res.send(user);
