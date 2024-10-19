@@ -42,7 +42,7 @@ export const Login = async (req: Request, res: Response) => {
 
     // Generate JWT token
     const token = sign(
-      { user_database_id, scope: adminLogin ? "admin" : "ambassador" },
+      { id: user_database_id, scope: adminLogin ? "admin" : "ambassador" },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
