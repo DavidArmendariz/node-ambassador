@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { firebaseApp } from "../firebase";
 import { sign } from "jsonwebtoken";
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const Login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
