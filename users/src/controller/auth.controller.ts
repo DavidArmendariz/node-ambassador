@@ -37,7 +37,6 @@ export const Register = async (req: Request, res: Response) => {
     user_data: user,
   });
 
-  await kafkaProducer.connect();
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
   res.send(user);
 };
@@ -54,7 +53,6 @@ export const UpdateInfo = async (req: Request, res: Response) => {
     user_data: user,
   });
 
-  await kafkaProducer.connect();
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
   res.send(await repository.findOne(user.id));
 };
@@ -77,7 +75,6 @@ export const UpdatePassword = async (req: Request, res: Response) => {
     user_data: user,
   });
 
-  await kafkaProducer.connect();
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
 
   res.send(user);
