@@ -3,26 +3,6 @@ import { firebaseApp } from "../firebase";
 import { sign } from "jsonwebtoken";
 import axios from "axios";
 
-export const Register = async (req: Request, res: Response) => {
-  const { password, email, first_name, last_name, is_ambassador } = req.body;
-
-  try {
-    const firebaseRecord = await firebaseApp.auth().createUser({
-      email: email,
-      password: password,
-      displayName: `${first_name} ${last_name}`,
-    });
-
-    const claims = { is_ambassador: is_ambassador };
-    await firebaseApp.auth().setCustomUserClaims(firebaseRecord.uid, claims);
-  } catch (error) {
-    console.error(
-      "Error creating user or setting custom claims:",
-      error.message
-    );
-  }
-};
-
 export const Login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 

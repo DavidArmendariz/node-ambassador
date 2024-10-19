@@ -2,6 +2,7 @@ import express from "express";
 import { routes } from "./routes";
 import dotenv from "dotenv";
 import { kafkaConsumer } from "./kafka/config";
+import { registerFirebaseUser } from "./firebase-utils";
 
 dotenv.config();
 
@@ -21,7 +22,16 @@ const run = async () => {
     .then(() => {
       return kafkaConsumer.run({
         eachMessage: async ({ message }) => {
-          console.log(message.value.toString());
+          const data = JSON.parse(message.value.toString());
+          if (data.event === "create") {
+            await registerFirebaseUser({
+              email: data.user_data.email,
+              password: data.user_data.password,
+              first_name: data.user_data.first_name,
+              last_name: data.user_data.last_name,
+              is_ambassador: data.user_data.is_ambassador,
+            });
+          }
         },
       });
     });
