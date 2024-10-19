@@ -1,26 +1,39 @@
 import express from "express";
 import { routes } from "./routes";
 import dotenv from "dotenv";
-import { AppDataSource } from "../data-source";
 import { kafkaConsumer } from "./kafka/config";
 
 dotenv.config();
 
-const PORT = 8001;
+const PORT = 3702;
 
-AppDataSource.initialize()
-  .then(async () => {
-    await kafkaConsumer.connect();
-    await kafkaConsumer.subscribe({ topic: "authentication" });
-    const app = express();
-    app.use(express.json());
+const run = async () => {
+  const app = express();
+  app.use(express.json());
 
-    routes(app);
+  routes(app);
 
+  const kafkaPromise = kafkaConsumer
+    .connect()
+    .then(() => {
+      return kafkaConsumer.subscribe({ topic: "authentication" });
+    })
+    .then(() => {
+      return kafkaConsumer.run({
+        eachMessage: async ({ message }) => {
+          console.log(message.value.toString());
+        },
+      });
+    });
+
+  const expressPromise = new Promise<void>((resolve) => {
     app.listen(PORT, () => {
       console.log(`listening to port ${PORT}`);
+      resolve();
     });
-  })
-  .finally(async () => {
-    await kafkaConsumer.disconnect();
   });
+
+  await Promise.all([kafkaPromise, expressPromise]);
+};
+
+run().then(console.error);
