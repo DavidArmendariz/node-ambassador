@@ -18,8 +18,6 @@ export const Login = async (req: Request, res: Response) => {
 
   const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
 
-  console.log("FIREBASE_API_KEY:", FIREBASE_API_KEY);
-
   try {
     const response = await axios.post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`,
@@ -30,9 +28,9 @@ export const Login = async (req: Request, res: Response) => {
       }
     );
 
-    const { idToken, localId } = response.data;
+    const { idToken } = response.data;
     const decodedToken = await firebaseApp.auth().verifyIdToken(idToken);
-    const { is_ambassador } = decodedToken;
+    const { is_ambassador, user_database_id } = decodedToken;
 
     const adminLogin = req.path === "/api/admin/login";
 
@@ -44,7 +42,7 @@ export const Login = async (req: Request, res: Response) => {
 
     // Generate JWT token
     const token = sign(
-      { id: localId, scope: adminLogin ? "admin" : "ambassador" },
+      { user_database_id, scope: adminLogin ? "admin" : "ambassador" },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",

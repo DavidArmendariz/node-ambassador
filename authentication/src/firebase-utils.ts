@@ -6,7 +6,9 @@ export const registerFirebaseUser = async ({
   first_name,
   last_name,
   is_ambassador,
+  user_database_id,
 }: {
+  user_database_id: number;
   password: string;
   email: string;
   first_name: string;
@@ -20,7 +22,7 @@ export const registerFirebaseUser = async ({
       displayName: `${first_name} ${last_name}`,
     });
 
-    const claims = { is_ambassador: is_ambassador };
+    const claims = { is_ambassador, user_database_id };
     await firebaseApp.auth().setCustomUserClaims(firebaseRecord.uid, claims);
   } catch (error) {
     console.error(

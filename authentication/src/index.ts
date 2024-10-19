@@ -25,6 +25,7 @@ const run = async () => {
           const data = JSON.parse(message.value.toString());
           if (data.event === "create") {
             await registerFirebaseUser({
+              user_database_id: data.id,
               email: data.user_data.email,
               password: data.user_data.password,
               first_name: data.user_data.first_name,
