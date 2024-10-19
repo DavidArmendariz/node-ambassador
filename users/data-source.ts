@@ -7,7 +7,7 @@ export const AppDataSource = new DataSource({
   port: 5432,
   username: "root",
   password: "root",
-  database: "node_ambassador_authentication_db",
+  database: "users",
   synchronize: true,
   logging: false,
   entities: [User],
