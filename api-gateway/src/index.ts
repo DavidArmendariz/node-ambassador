@@ -4,17 +4,12 @@ import { createConnection } from "typeorm";
 import { routes } from "./routes";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { createClient } from "redis";
 
 dotenv.config();
 
-export const redisClient = createClient({
-  url: "redis://redis:6379",
-});
+const PORT = 3703;
 
 createConnection().then(async () => {
-  await redisClient.connect();
-
   const app = express();
 
   app.use(cookieParser());
@@ -32,7 +27,7 @@ createConnection().then(async () => {
 
   routes(app);
 
-  app.listen(8000, () => {
-    console.log("listening to port 8000");
+  app.listen(PORT, () => {
+    console.log(`Listening to port ${PORT}`);
   });
 });
