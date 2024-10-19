@@ -32,7 +32,7 @@ createConnection().then(async () => {
 
   routes(app);
 
-  app.listen(8000, () => {
-    console.log("listening to port 8000");
+  app.listen(3701, () => {
+    console.log("listening to port 3701");
   });
 });
