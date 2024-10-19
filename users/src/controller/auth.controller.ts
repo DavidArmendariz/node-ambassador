@@ -34,7 +34,7 @@ export const Register = async (req: Request, res: Response) => {
 
   const value = JSON.stringify({
     event: "create",
-    user_data: user,
+    user_data: { ...user, password },
   });
 
   delete user.password;
