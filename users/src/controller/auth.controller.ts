@@ -16,7 +16,7 @@ export const AuthenticatedUser = async (req: Request, res: Response) => {
 };
 
 export const Register = async (req: Request, res: Response) => {
-  const { password, password_confirm, ...body } = req.body;
+  const { password, password_confirm, email, first_name, last_name } = req.body;
 
   if (password !== password_confirm) {
     return res.status(400).send({
@@ -25,7 +25,9 @@ export const Register = async (req: Request, res: Response) => {
   }
 
   const user = await AppDataSource.getRepository(User).save({
-    ...body,
+    email,
+    first_name,
+    last_name,
     password: await bcryptjs.hash(password, 10),
     is_ambassador: req.path === "/api/ambassador/register",
   });
