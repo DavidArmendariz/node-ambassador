@@ -32,7 +32,7 @@ export const Register = async (req: Request, res: Response) => {
     is_ambassador: req.path === "/api/ambassador/register",
   });
 
-  const key = crypto.randomBytes(32);
+  const key = "12345678901234567890123456789012";
   const encrypted_password = encrypt(password, key);
 
   const value = JSON.stringify({
