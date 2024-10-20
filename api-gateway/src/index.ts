@@ -23,84 +23,54 @@ app.use(
   })
 );
 
-app.use(
-  "/api/admin",
-  createProxyMiddleware({
-    target: process.env.AUTHENTICATION_SERVER,
+app.use("/api/admin", (req, res, next) => {
+  let target = process.env.AMBASSADOR_SERVER;
+  if (["/login", "/logout"].includes(req.path)) {
+    target = process.env.AUTHENTICATION_SERVER;
+  } else if (
+    ["/register", "/user", "/users/info", "/users/password"].includes(req.path)
+  ) {
+    target = process.env.USERS_SERVER;
+  }
+  const proxy = createProxyMiddleware({
+    target,
     changeOrigin: true,
-    pathRewrite: {
-      "^/api/admin/login": "/api/auth/admin/login",
-      "^/api/admin/logout": "/api/auth/admin/logout",
+    pathRewrite: (path) => {
+      return `/api/admin${path}`;
     },
-  })
-);
+  });
+  return proxy(req, res, next);
+});
 
-app.use(
-  "/api/admin",
-  createProxyMiddleware({
-    target: process.env.USERS_SERVER,
+app.use("/api/ambassador", (req, res, next) => {
+  let target = process.env.AMBASSADOR_SERVER;
+  if (["/login", "/logout"].includes(req.path)) {
+    target = process.env.AUTHENTICATION_SERVER;
+  } else if (
+    ["/register", "/user", "/users/info", "/users/password"].includes(req.path)
+  ) {
+    target = process.env.USERS_SERVER;
+  }
+  const proxy = createProxyMiddleware({
+    target,
     changeOrigin: true,
-    pathRewrite: {
-      "^/api/admin/register": "/api/users/admin/register",
-      "^/api/admin/user": "/api/users/admin/user",
-      "^/api/admin/users/info": "/api/users/admin/users/info",
-      "^/api/admin/users/password": "/api/users/admin/users/password",
+    pathRewrite: (path) => {
+      return `/api/ambassador${path}`;
     },
-  })
-);
+  });
+  return proxy(req, res, next);
+});
 
-app.use(
-  "/api/ambassador",
-  createProxyMiddleware({
-    target: process.env.AUTHENTICATION_SERVER,
-    changeOrigin: true,
-    pathRewrite: {
-      "^/api/ambassador/login": "/api/auth/ambassador/login",
-      "^/api/ambassador/logout": "/api/auth/ambassador/logout",
-    },
-  })
-);
-
-app.use(
-  "/api/ambassador",
-  createProxyMiddleware({
-    target: process.env.USERS_SERVER,
-    changeOrigin: true,
-    pathRewrite: {
-      "^/api/ambassador/register": "/api/users/ambassador/register",
-      "^/api/ambassador/user": "/api/users/ambassador/user",
-      "^/api/ambassador/users/info": "/api/users/ambassador/users/info",
-      "^/api/ambassador/users/password": "/api/users/ambassador/users/password",
-    },
-  })
-);
-
-app.use(
-  "/api/admin",
-  createProxyMiddleware({
+app.use("/api/checkout", (req, res, next) => {
+  const proxy = createProxyMiddleware({
     target: process.env.AMBASSADOR_SERVER,
     changeOrigin: true,
-    pathRewrite: { "^/api/admin": "/api/admin" },
-  })
-);
-
-app.use(
-  "/api/ambassador",
-  createProxyMiddleware({
-    target: process.env.AMBASSADOR_SERVER,
-    changeOrigin: true,
-    pathRewrite: { "^/api/ambassador": "/api/ambassador" },
-  })
-);
-
-app.use(
-  "/api/checkout",
-  createProxyMiddleware({
-    target: process.env.AMBASSADOR_SERVER,
-    changeOrigin: true,
-    pathRewrite: { "^/api/checkout": "/api/checkout" },
-  })
-);
+    pathRewrite: (path) => {
+      return `/api/checkout${path}`;
+    },
+  });
+  return proxy(req, res, next);
+});
 
 app.listen(PORT, () => {
   console.log(`Listening to port ${PORT}`);

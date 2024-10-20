@@ -32,7 +32,6 @@ export const CreateOrder = async (req: Request, res: Response) => {
 
   const link = await getRepository(Link).findOne({
     where: { code: body.code },
-    relations: ["user"],
   });
 
   if (!link) {
@@ -48,8 +47,8 @@ export const CreateOrder = async (req: Request, res: Response) => {
     await queryRunner.startTransaction();
 
     let order = new Order();
-    order.user_id = link.user.id;
-    order.ambassador_email = link.user.email;
+    order.user_id = link.user_id;
+    order.ambassador_email = body.email;
     order.code = body.code;
     order.first_name = body.first_name;
     order.last_name = body.last_name;
