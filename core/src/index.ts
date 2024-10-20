@@ -4,6 +4,7 @@ import { routes } from "./routes";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { createClient } from "redis";
+import { kafkaProducer } from "./kafka/config";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ export const redisClient = createClient({
 });
 
 createConnection().then(async () => {
+  await kafkaProducer.connect();
   await redisClient.connect();
 
   const app = express();

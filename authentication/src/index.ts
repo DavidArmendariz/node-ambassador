@@ -39,7 +39,7 @@ const run = async () => {
 
   const expressPromise = new Promise<void>((resolve) => {
     app.listen(PORT, () => {
-      console.log(`listening to port ${PORT}`);
+      console.log(`Listening to port ${PORT}`);
       resolve();
     });
   });

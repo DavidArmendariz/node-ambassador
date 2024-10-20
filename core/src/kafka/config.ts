@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const kafka = new Kafka({
-  clientId: "email-consumer",
+  clientId: "email-producer",
   brokers: [process.env.KAFKA_BROKER],
   ssl: true,
   sasl: {
