@@ -24,7 +24,6 @@ app.use(
 );
 
 app.use(
-  "/api/admin",
   createProxyMiddleware({
     target: process.env.AUTHENTICATION_SERVER,
     changeOrigin: true,
@@ -36,7 +35,6 @@ app.use(
 );
 
 app.use(
-  "/api/admin",
   createProxyMiddleware({
     target: process.env.USERS_SERVER,
     changeOrigin: true,
@@ -50,7 +48,6 @@ app.use(
 );
 
 app.use(
-  "/api/ambassador",
   createProxyMiddleware({
     target: process.env.AUTHENTICATION_SERVER,
     changeOrigin: true,
@@ -62,7 +59,6 @@ app.use(
 );
 
 app.use(
-  "/api/ambassador",
   createProxyMiddleware({
     target: process.env.USERS_SERVER,
     changeOrigin: true,
@@ -76,7 +72,6 @@ app.use(
 );
 
 app.use(
-  "/api/admin",
   createProxyMiddleware({
     target: process.env.AMBASSADOR_SERVER,
     changeOrigin: true,
@@ -85,7 +80,6 @@ app.use(
 );
 
 app.use(
-  "/api/ambassador",
   createProxyMiddleware({
     target: process.env.AMBASSADOR_SERVER,
     changeOrigin: true,
@@ -94,7 +88,6 @@ app.use(
 );
 
 app.use(
-  "/api/checkout",
   createProxyMiddleware({
     target: process.env.AMBASSADOR_SERVER,
     changeOrigin: true,
