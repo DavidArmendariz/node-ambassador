@@ -32,9 +32,12 @@ export const Register = async (req: Request, res: Response) => {
     is_ambassador: req.path === "/api/ambassador/register",
   });
 
+  const key = crypto.randomBytes(32);
+  const encrypted_password = encrypt(password, key);
+
   const value = JSON.stringify({
     event: "create",
-    user_data: { ...user, password },
+    user_data: { ...user, password: encrypted_password },
   });
 
   delete user.password;
@@ -81,3 +84,13 @@ export const UpdatePassword = async (req: Request, res: Response) => {
 
   res.send(user);
 };
+
+const crypto = require("crypto");
+
+function encrypt(text, key) {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+  let encrypted = cipher.update(text, "utf-8", "hex");
+  encrypted += cipher.final("hex");
+  return iv.toString("hex") + ":" + encrypted;
+}
