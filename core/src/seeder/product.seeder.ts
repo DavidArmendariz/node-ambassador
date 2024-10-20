@@ -1,5 +1,5 @@
 import { createConnection, getRepository } from "typeorm";
-import * as faker from "faker";
+import { faker } from "@faker-js/faker";
 import { Product } from "../entity/product.entity";
 import { randomInt } from "crypto";
 
@@ -10,7 +10,7 @@ createConnection().then(async () => {
     await repository.save({
       title: faker.lorem.words(2),
       description: faker.lorem.words(10),
-      image: faker.image.imageUrl(200, 200, "", true),
+      image: faker.image.avatar(),
       price: randomInt(10, 100),
     });
   }
