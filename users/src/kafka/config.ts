@@ -12,6 +12,7 @@ const kafka = new Kafka({
     username: process.env.KAFKA_API_KEY,
     password: process.env.KAFKA_SECRET_KEY,
   },
+  connectionTimeout: 10000,
 });
 
 export const kafkaProducer = kafka.producer();
