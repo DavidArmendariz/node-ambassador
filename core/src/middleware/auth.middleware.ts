@@ -9,7 +9,7 @@ export const AuthMiddleware = async (
   try {
     const jwt = req.cookies["jwt"];
 
-    const payload: any = verify(jwt, process.env.SECRET_KEY);
+    const payload: any = verify(jwt, process.env.JWT_SECRET);
 
     if (!payload) {
       return res.status(401).send({
