@@ -1,14 +1,12 @@
 import express from "express";
 import cors from "cors";
-import { routes } from "./routes";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { debug } from "console";
 
 dotenv.config();
 
-const PORT = 3703;
+const PORT = process.env.API_GATEWAY_PORT;
 
 const app = express();
 
@@ -18,18 +16,78 @@ app.use(
   cors({
     credentials: true,
     origin: [
-      "http://localhost:3000",
-      "http://localhost:4000",
-      "http://localhost:5000",
+      process.env.FRONTEND_URL1,
+      process.env.FRONTEND_URL2,
+      process.env.FRONTEND_URL3,
     ],
   })
 );
 
-// Gateaway for Ambassador requests
+app.use(
+  "/api/admin",
+  createProxyMiddleware({
+    target: process.env.AUTHENTICATION_SERVER,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/admin/login": "/api/auth/admin/login",
+      "^/api/admin/logout": "/api/auth/admin/logout",
+    },
+  })
+);
+
+app.use(
+  "/api/admin",
+  createProxyMiddleware({
+    target: process.env.USERS_SERVER,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/admin/register": "/api/users/admin/register",
+      "^/api/admin/user": "/api/users/admin/user",
+      "^/api/admin/users/info": "/api/users/admin/users/info",
+      "^/api/admin/users/password": "/api/users/admin/users/password",
+    },
+  })
+);
+
 app.use(
   "/api/ambassador",
   createProxyMiddleware({
-    target: `http://localhost:"${process.env.PORT_AMBASSADOR}"`, // Cambia esta URL por el servidor que maneja las rutas de ambassador
+    target: process.env.AUTHENTICATION_SERVER,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/ambassador/login": "/api/auth/ambassador/login",
+      "^/api/ambassador/logout": "/api/auth/ambassador/logout",
+    },
+  })
+);
+
+app.use(
+  "/api/ambassador",
+  createProxyMiddleware({
+    target: process.env.USERS_SERVER,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/ambassador/register": "/api/users/ambassador/register",
+      "^/api/ambassador/user": "/api/users/ambassador/user",
+      "^/api/ambassador/users/info": "/api/users/ambassador/users/info",
+      "^/api/ambassador/users/password": "/api/users/ambassador/users/password",
+    },
+  })
+);
+
+app.use(
+  "/api/admin",
+  createProxyMiddleware({
+    target: process.env.AMBASSADOR_SERVER,
+    changeOrigin: true,
+    pathRewrite: { "^/api/admin": "/api/admin" },
+  })
+);
+
+app.use(
+  "/api/ambassador",
+  createProxyMiddleware({
+    target: process.env.AMBASSADOR_SERVER,
     changeOrigin: true,
     pathRewrite: { "^/api/ambassador": "/api/ambassador" },
   })
@@ -38,42 +96,11 @@ app.use(
 app.use(
   "/api/checkout",
   createProxyMiddleware({
-    target: `http://localhost:"${process.env.PORT_AMBASSADOR}`, // El servidor que maneja las rutas de checkout
+    target: process.env.AMBASSADOR_SERVER,
     changeOrigin: true,
-    pathRewrite: { "^/api/checkout": "/api/checkout" }, // Mantén el prefijo /api/checkout
+    pathRewrite: { "^/api/checkout": "/api/checkout" },
   })
 );
-
-app.use(
-  "/api/admin",
-  createProxyMiddleware({
-    target: `http://localhost:"${process.env.PORT_AMBASSADOR}`, // Cambia esta URL por el servidor que maneja las rutas de admin
-    changeOrigin: true,
-    pathRewrite: { "^/api/admin": "/api/admin" },
-  })
-);
-
-// Gateaway for Users requests
-app.use(
-  "/api/users",
-  createProxyMiddleware({
-    target: `http://localhost:"${process.env.PORT_USERS}"`, // Cambia esta URL por el servidor que maneja las rutas de ambassador
-    changeOrigin: true,
-    pathRewrite: { "^/api/users": "/api/users" },
-  })
-);
-
-// Gateaway for Authentication requests
-app.use(
-  "/api/authentication",
-  createProxyMiddleware({
-    target: `http://localhost:"${process.env.PORT_AUTHENTICATION}"`, // Cambia esta URL por el servidor que maneja las rutas de ambassador
-    changeOrigin: true,
-    pathRewrite: { "^/api/authentication": "/api/authentication" },
-  })
-);
-
-routes(app);
 
 app.listen(PORT, () => {
   console.log(`Listening to port ${PORT}`);
