@@ -85,6 +85,16 @@ export const UpdatePassword = async (req: Request, res: Response) => {
   res.send(user);
 };
 
+export const Ambassadors = async (req: Request, res: Response) => {
+  res.send(
+    await AppDataSource.getRepository(User).find({
+      where: {
+        is_ambassador: true,
+      },
+    })
+  );
+};
+
 const crypto = require("crypto");
 
 function encrypt(text, key) {

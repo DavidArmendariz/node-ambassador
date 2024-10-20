@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  Ambassadors,
   AuthenticatedUser,
   Register,
   UpdateInfo,
@@ -21,4 +22,5 @@ export const routes = (router: Router) => {
     UpdatePassword
   );
   router.post("/api/users/ambassador/register", Register);
+  router.get("/api/admin/ambassadors", AuthMiddleware, Ambassadors);
 };
