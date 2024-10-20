@@ -25,38 +25,54 @@ app.use(
   })
 );
 
-// Configuración del API Gateway para redirigir todas las peticiones de ambassador
-const ambassadorServiceProxyAmbassador = createProxyMiddleware({
-  target: `http://localhost:3701`,
-  changeOrigin: true,
-});
+// Gateaway for Ambassador requests
+app.use(
+  "/api/ambassador",
+  createProxyMiddleware({
+    target: `http://localhost:"${process.env.PORT_AMBASSADOR}"`, // Cambia esta URL por el servidor que maneja las rutas de ambassador
+    changeOrigin: true,
+    pathRewrite: { "^/api/ambassador": "/api/ambassador" },
+  })
+);
 
-const ambassadorServiceProxyCheckout = createProxyMiddleware({
-  target: `http://localhost:3701`, // No incluyas /api/checkout en el target
-  changeOrigin: true,
-});
+app.use(
+  "/api/checkout",
+  createProxyMiddleware({
+    target: `http://localhost:"${process.env.PORT_AMBASSADOR}`, // El servidor que maneja las rutas de checkout
+    changeOrigin: true,
+    pathRewrite: { "^/api/checkout": "/api/checkout" }, // Mantén el prefijo /api/checkout
+  })
+);
 
-const ambassadorServiceProxyAdmin = createProxyMiddleware({
-  target: `http://localhost:3701`,
-  changeOrigin: true,
-  pathRewrite: {
-    "^/api/admin": "/api/admin", // Mantén el prefijo /api/admin
-  },
-});
+app.use(
+  "/api/admin",
+  createProxyMiddleware({
+    target: `http://localhost:"${process.env.PORT_AMBASSADOR}`, // Cambia esta URL por el servidor que maneja las rutas de admin
+    changeOrigin: true,
+    pathRewrite: { "^/api/admin": "/api/admin" },
+  })
+);
 
-// Aplicar el proxy para todas las rutas de ambassador
-module.exports = function (app) {
-  app.use("/api/checkout", ambassadorServiceProxyCheckout);
-};
+// Gateaway for Users requests
+app.use(
+  "/api/users",
+  createProxyMiddleware({
+    target: `http://localhost:"${process.env.PORT_USERS}"`, // Cambia esta URL por el servidor que maneja las rutas de ambassador
+    changeOrigin: true,
+    pathRewrite: { "^/api/users": "/api/users" },
+  })
+);
 
-module.exports = function (app) {
-  app.use("/api/ambassador", ambassadorServiceProxyAmbassador);
-};
+// Gateaway for Authentication requests
+app.use(
+  "/api/authentication",
+  createProxyMiddleware({
+    target: `http://localhost:"${process.env.PORT_AUTHENTICATION}"`, // Cambia esta URL por el servidor que maneja las rutas de ambassador
+    changeOrigin: true,
+    pathRewrite: { "^/api/authentication": "/api/authentication" },
+  })
+);
 
-module.exports = function (app) {
-  app.use("/api/admin", ambassadorServiceProxyAdmin);
-};
-// Mantener las demás rutas
 routes(app);
 
 app.listen(PORT, () => {
