@@ -47,7 +47,6 @@ export const Stats = async (req: Request, res: Response) => {
 };
 
 export const GetLink = async (req: Request, res: Response) => {
-  console.log("Request", req);
   res.send(
     await getRepository(Link).findOne({
       where: {
