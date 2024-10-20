@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
 import { User } from "../entity/user.entity";
 import bcryptjs from "bcryptjs";
 import { AppDataSource } from "../../data-source";
@@ -17,6 +16,7 @@ export const AuthenticatedUser = async (req: Request, res: Response) => {
 };
 
 export const Register = async (req: Request, res: Response) => {
+  console.log("Request", req.url);
   const { password, password_confirm, email, first_name, last_name } = req.body;
 
   if (password !== password_confirm) {
