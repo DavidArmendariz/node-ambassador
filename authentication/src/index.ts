@@ -6,7 +6,7 @@ import { registerFirebaseUser } from "./firebase-utils";
 
 dotenv.config();
 
-const PORT = 3702;
+const PORT = process.env.PORT || 3702;
 
 const run = async () => {
   const app = express();
@@ -39,7 +39,7 @@ const run = async () => {
 
   const expressPromise = new Promise<void>((resolve) => {
     app.listen(PORT, () => {
-      console.log(`listening to port ${PORT}`);
+      console.log(`Listening to port ${PORT}`);
       resolve();
     });
   });

@@ -13,9 +13,10 @@ const kafka = new Kafka({
     username: process.env.KAFKA_API_KEY,
     password: process.env.KAFKA_SECRET_KEY,
   },
+  connectionTimeout: 10000,
 });
 
-const consumer = kafka.consumer({ groupId: "email-consumer" });
+const kafkaConsumer = kafka.consumer({ groupId: "email-consumer" });
 
 const transporter = createTransport({
   host: "host.docker.internal",
@@ -23,9 +24,9 @@ const transporter = createTransport({
 });
 
 const run = async () => {
-  await consumer.connect();
-  await consumer.subscribe({ topic: "default" });
-  await consumer.run({
+  await kafkaConsumer.connect();
+  await kafkaConsumer.subscribe({ topic: "default" });
+  await kafkaConsumer.run({
     eachMessage: async (message: EachMessagePayload) => {
       const order = JSON.parse(message.message.value.toString());
       await transporter.sendMail({

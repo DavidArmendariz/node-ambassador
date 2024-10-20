@@ -140,7 +140,6 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
     ambassador_revenue: order.ambassador_revenue,
   });
 
-  await kafkaProducer.connect();
   await kafkaProducer.send({ topic: "default", messages: [{ value }] });
 
   res.send({
