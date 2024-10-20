@@ -2,7 +2,7 @@ services:
   backend:
     build: .
     ports:
-      - "8000:8000"
+      - "3701:3701"
     depends_on:
       - db
       - redis
