@@ -42,17 +42,18 @@ export const Stats = async (req: Request, res: Response) => {
         count: orders.length,
         revenue: orders.reduce((s, o) => s + o.ambassador_revenue, 0),
       };
-    }),
+    })
   );
 };
 
 export const GetLink = async (req: Request, res: Response) => {
+  console.log("Request", req);
   res.send(
     await getRepository(Link).findOne({
       where: {
         code: req.params.code,
       },
-      relations: ["user", "products"],
-    }),
+      relations: ["products"],
+    })
   );
 };
