@@ -51,7 +51,6 @@ export const UpdateInfo = async (req: Request, res: Response) => {
   const repository = AppDataSource.getRepository(User);
 
   await repository.update(user.id, req.body);
-  //const user_info = await repository.update(user.id, req.body);
 
   const value = JSON.stringify({
     event: "update",
@@ -75,9 +74,14 @@ export const UpdatePassword = async (req: Request, res: Response) => {
     password: await bcryptjs.hash(req.body.password, 10),
   });
 
+  const encrypted_password = encrypt(
+    req.body.password,
+    process.env.ENCRYPTION_KEY
+  );
+
   const value = JSON.stringify({
     event: "update",
-    user_data: user,
+    user_data: { ...user, password: encrypted_password },
   });
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
