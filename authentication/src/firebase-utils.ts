@@ -31,3 +31,20 @@ export const registerFirebaseUser = async ({
     );
   }
 };
+
+export const updateFirebaseUserPassword = async ({
+  uid,
+  newPassword,
+}: {
+  uid: string;
+  newPassword: string;
+}) => {
+  try {
+    await firebaseApp.auth().updateUser(uid, {
+      password: newPassword,
+    });
+    console.log("Password updated successfully for user:", uid);
+  } catch (error) {
+    console.error("Error updating user password:", error.message);
+  }
+};

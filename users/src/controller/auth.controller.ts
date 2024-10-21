@@ -63,7 +63,7 @@ export const UpdateInfo = async (req: Request, res: Response) => {
 };
 
 export const UpdatePassword = async (req: Request, res: Response) => {
-  const user_id = req["user_database_id"];
+  const userId = req["user_database_id"];
 
   if (req.body.password !== req.body.password_confirm) {
     return res.status(400).send({
@@ -71,7 +71,7 @@ export const UpdatePassword = async (req: Request, res: Response) => {
     });
   }
 
-  const user_update = await AppDataSource.getRepository(User).update(user_id, {
+  const user_update = await AppDataSource.getRepository(User).update(userId, {
     password: await bcryptjs.hash(req.body.password, 10),
   });
 
@@ -81,8 +81,12 @@ export const UpdatePassword = async (req: Request, res: Response) => {
   );
 
   const value = JSON.stringify({
-    event: "update",
-    user_data: { ...user_update, password: encrypted_password },
+    event: "update_password",
+    user_data: {
+      ...user_update,
+      password: encrypted_password,
+      firebase_uid: req["firebase_uid"],
+    },
   });
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });

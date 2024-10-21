@@ -2,7 +2,10 @@ import express from "express";
 import { routes } from "./routes";
 import dotenv from "dotenv";
 import { kafkaConsumer } from "./kafka/config";
-import { registerFirebaseUser } from "./firebase-utils";
+import {
+  registerFirebaseUser,
+  updateFirebaseUserPassword,
+} from "./firebase-utils";
 import { decrypt } from "./utils/utils";
 
 dotenv.config();
@@ -36,6 +39,15 @@ const run = async () => {
               first_name: data.user_data.first_name,
               last_name: data.user_data.last_name,
               is_ambassador: data.user_data.is_ambassador,
+            });
+          } else if (data.event === "update_password") {
+            const decrypted_password = decrypt(
+              data.user_data.password,
+              process.env.ENCRYPTION_KEY
+            );
+            await updateFirebaseUserPassword({
+              uid: data.user_data.firebase_uid,
+              newPassword: decrypted_password,
             });
           }
         },

@@ -30,7 +30,7 @@ export const Login = async (req: Request, res: Response) => {
 
     const { idToken } = response.data;
     const decodedToken = await firebaseApp.auth().verifyIdToken(idToken);
-    const { is_ambassador, user_database_id, name } = decodedToken;
+    const { is_ambassador, user_database_id, name, uid } = decodedToken;
 
     const adminLogin = req.path === "/api/admin/login";
 
@@ -47,6 +47,7 @@ export const Login = async (req: Request, res: Response) => {
         id: user_database_id,
         name,
         scope: adminLogin ? "admin" : "ambassador",
+        uid,
       },
       process.env.JWT_SECRET,
       {

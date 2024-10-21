@@ -31,6 +31,7 @@ export const AuthMiddleware = async (
 
     req["user_database_id"] = payload.id;
     req["user_name"] = payload.name;
+    req["firebase_uid"] = payload.uid;
 
     next();
   } catch (e) {
