@@ -32,7 +32,7 @@ export const DeleteProduct = async (req: Request, res: Response) => {
 export const ProductsFrontend = async (req: Request, res: Response) => {
   let products = JSON.parse(await redisClient.get("products_frontend"));
 
-  if (!products) {
+  if (!products.length) {
     products = await getRepository(Product).find();
 
     await redisClient.set("products_frontend", JSON.stringify(products), {
@@ -48,7 +48,7 @@ export const ProductsBackend = async (req: Request, res: Response) => {
     await redisClient.get("products_frontend")
   );
 
-  if (!products) {
+  if (!products.length) {
     products = await getRepository(Product).find();
 
     await redisClient.set("products_frontend", JSON.stringify(products), {

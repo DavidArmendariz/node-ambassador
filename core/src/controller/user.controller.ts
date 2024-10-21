@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import { User } from "../entity/user.entity";
 import { redisClient } from "../index";
 
 export const Rankings = async (req: Request, res: Response) => {
