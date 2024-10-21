@@ -59,7 +59,7 @@ export const CreateOrder = async (req: Request, res: Response) => {
 
     order = await queryRunner.manager.save(order);
 
-    const line_items = [];
+    const lineItems = [];
 
     for (let p of body.products) {
       const product = await getRepository(Product).findOne(p.product_id);
@@ -74,7 +74,7 @@ export const CreateOrder = async (req: Request, res: Response) => {
 
       await queryRunner.manager.save(orderItem);
 
-      line_items.push({
+      lineItems.push({
         name: product.title,
         description: product.description,
         images: [product.image],
@@ -90,7 +90,7 @@ export const CreateOrder = async (req: Request, res: Response) => {
 
     const source = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items,
+      line_items: lineItems,
       success_url: `${process.env.CHECKOUT_URL}/success?source={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CHECKOUT_URL}/error`,
     });
@@ -128,9 +128,9 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 
   await repository.update(order.id, { complete: true });
 
-  const user_name = req["user_name"];
+  const userName = req["user_name"];
 
-  await redisClient.zIncrBy("rankings", order.ambassador_revenue, user_name);
+  await redisClient.zIncrBy("rankings", order.ambassador_revenue, userName);
 
   const value = JSON.stringify({
     ...order,

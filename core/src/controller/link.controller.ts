@@ -14,10 +14,10 @@ export const Links = async (req: Request, res: Response) => {
 };
 
 export const CreateLink = async (req: Request, res: Response) => {
-  const user_id = req["user_database_id"];
+  const userId = req["user_database_id"];
 
   const link = await getRepository(Link).save({
-    user_id: user_id,
+    user_id: userId,
     code: Math.random().toString(36).substring(6),
     products: req.body.products.map((id) => ({ id })),
   });
@@ -26,10 +26,10 @@ export const CreateLink = async (req: Request, res: Response) => {
 };
 
 export const Stats = async (req: Request, res: Response) => {
-  const user = req["user_database_id"];
+  const userId = req["user_database_id"];
 
   const links = await getRepository(Link).find({
-    where: { user_id: user },
+    where: { user_id: userId },
     relations: ["orders", "orders.order_items"],
   });
 
