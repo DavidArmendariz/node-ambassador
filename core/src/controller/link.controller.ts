@@ -14,10 +14,10 @@ export const Links = async (req: Request, res: Response) => {
 };
 
 export const CreateLink = async (req: Request, res: Response) => {
-  const user = req["user_database_id"];
+  const user_id = req["user_database_id"];
 
   const link = await getRepository(Link).save({
-    user_id: user,
+    user_id: user_id,
     code: Math.random().toString(36).substring(6),
     products: req.body.products.map((id) => ({ id })),
   });
