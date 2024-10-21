@@ -3,6 +3,7 @@ import { routes } from "./routes";
 import dotenv from "dotenv";
 import { kafkaConsumer } from "./kafka/config";
 import { registerFirebaseUser } from "./firebase-utils";
+import { decrypt } from "./utils/utils";
 
 dotenv.config();
 
@@ -24,10 +25,14 @@ const run = async () => {
         eachMessage: async ({ message }) => {
           const data = JSON.parse(message.value.toString());
           if (data.event === "create") {
+            const decrypted_password = decrypt(
+              data.user_data.password,
+              process.env.ENCRYPTION_KEY
+            );
             await registerFirebaseUser({
               user_database_id: data.user_data.id,
               email: data.user_data.email,
-              password: data.user_data.password,
+              password: decrypted_password,
               first_name: data.user_data.first_name,
               last_name: data.user_data.last_name,
               is_ambassador: data.user_data.is_ambassador,

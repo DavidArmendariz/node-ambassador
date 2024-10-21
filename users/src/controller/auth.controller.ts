@@ -3,6 +3,7 @@ import { User } from "../entity/user.entity";
 import bcryptjs from "bcryptjs";
 import { AppDataSource } from "../../data-source";
 import { kafkaProducer } from "../kafka/config";
+import { encrypt } from "../utils/utils";
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
   const user = req["user"];
@@ -32,8 +33,7 @@ export const Register = async (req: Request, res: Response) => {
     is_ambassador: req.path === "/api/ambassador/register",
   });
 
-  const key = crypto.randomBytes(32);
-  const encrypted_password = encrypt(password, key);
+  const encrypted_password = encrypt(password, process.env.ENCRYPTION_KEY);
 
   const value = JSON.stringify({
     event: "create",
@@ -85,12 +85,12 @@ export const UpdatePassword = async (req: Request, res: Response) => {
   res.send(user);
 };
 
-const crypto = require("crypto");
-
-function encrypt(text, key) {
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
-  let encrypted = cipher.update(text, "utf-8", "hex");
-  encrypted += cipher.final("hex");
-  return iv.toString("hex") + ":" + encrypted;
-}
+export const Ambassadors = async (req: Request, res: Response) => {
+  res.send(
+    await AppDataSource.getRepository(User).find({
+      where: {
+        is_ambassador: true,
+      },
+    })
+  );
+};
