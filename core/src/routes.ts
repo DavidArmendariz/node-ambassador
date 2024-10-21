@@ -19,6 +19,7 @@ import {
 import {
   ConfirmOrder,
   CreateOrder,
+  GetAmbassadorRevenue,
   Orders,
 } from "./controller/order.controller";
 
@@ -38,6 +39,7 @@ export const routes = (router: Router) => {
   router.post("/api/ambassador/links", AuthMiddleware, CreateLink);
   router.get("/api/ambassador/stats", AuthMiddleware, Stats);
   router.get("/api/ambassador/rankings", AuthMiddleware, Rankings);
+  router.get("/api/ambassador/revenue", AuthMiddleware, GetAmbassadorRevenue);
 
   // Checkout
   router.get("/api/checkout/links/:code", GetLink);

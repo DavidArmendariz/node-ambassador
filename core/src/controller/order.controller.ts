@@ -144,3 +144,17 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
     message: "success",
   });
 };
+
+export const GetAmbassadorRevenue = async (req: Request, res: Response) => {
+  const userId = req["user_id"];
+  const ordersRepository = getRepository(Order);
+  const orders = await ordersRepository.find({
+    where: {
+      user_id: userId,
+      complete: true,
+    },
+    relations: ["order_items"],
+  });
+  const revenue = orders.reduce((s, o) => s + o.ambassador_revenue, 0);
+  res.send({ revenue });
+};
