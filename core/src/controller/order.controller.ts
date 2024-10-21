@@ -6,7 +6,6 @@ import { Product } from "../entity/product.entity";
 import { OrderItem } from "../entity/order-item.entity";
 import Stripe from "stripe";
 import { redisClient } from "../index";
-import { User } from "../entity/user.entity";
 import { kafkaProducer } from "../kafka/config";
 
 export const Orders = async (req: Request, res: Response) => {
@@ -129,9 +128,9 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 
   await repository.update(order.id, { complete: true });
 
-  const user = await getRepository(User).findOne(order.user_id);
+  const user_name = req["user_name"];
 
-  await redisClient.zIncrBy("rankings", order.ambassador_revenue, user.name);
+  await redisClient.zIncrBy("rankings", order.ambassador_revenue, user_name);
 
   const value = JSON.stringify({
     ...order,
