@@ -41,6 +41,13 @@ app.use("/api/admin", (req, res, next) => {
     pathRewrite: (path) => {
       return `/api/admin${path}`;
     },
+    on: {
+      proxyReq: (proxyReq, req) => {
+        if (req.headers.cookie) {
+          proxyReq.setHeader("cookie", req.headers.cookie);
+        }
+      },
+    },
   });
   return proxy(req, res, next);
 });
@@ -77,6 +84,13 @@ app.use("/api/checkout", (req, res, next) => {
     changeOrigin: true,
     pathRewrite: (path) => {
       return `/api/checkout${path}`;
+    },
+    on: {
+      proxyReq: (proxyReq, req) => {
+        if (req.headers.cookie) {
+          proxyReq.setHeader("cookie", req.headers.cookie);
+        }
+      },
     },
   });
   return proxy(req, res, next);
