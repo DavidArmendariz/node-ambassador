@@ -30,7 +30,7 @@ export const Login = async (req: Request, res: Response) => {
 
     const { idToken } = response.data;
     const decodedToken = await firebaseApp.auth().verifyIdToken(idToken);
-    const { is_ambassador, user_database_id } = decodedToken;
+    const { is_ambassador, user_database_id, name } = decodedToken;
 
     const adminLogin = req.path === "/api/admin/login";
 
@@ -43,7 +43,11 @@ export const Login = async (req: Request, res: Response) => {
     // Generate JWT token
 
     const token = sign(
-      { id: user_database_id, scope: adminLogin ? "admin" : "ambassador" },
+      {
+        id: user_database_id,
+        name,
+        scope: adminLogin ? "admin" : "ambassador",
+      },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",

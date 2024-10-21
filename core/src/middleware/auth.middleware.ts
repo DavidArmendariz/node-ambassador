@@ -29,6 +29,7 @@ export const AuthMiddleware = async (
     }
 
     req["user_database_id"] = payload.id;
+    req["user_name"] = payload.name;
 
     next();
   } catch (e) {
