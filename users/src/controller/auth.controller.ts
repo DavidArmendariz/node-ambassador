@@ -50,15 +50,16 @@ export const UpdateInfo = async (req: Request, res: Response) => {
   const userId = req["user_database_id"];
   const repository = AppDataSource.getRepository(User);
 
-  const userUpdate = await repository.update(userId, req.body);
+  await repository.update(userId, req.body);
+  const updatedUser = await repository.findOne({ where: { id: userId } });
 
   const value = JSON.stringify({
     event: "update",
-    user_data: { ...userUpdate, firebase_uid: req["firebase_uid"] },
+    user_data: { ...updatedUser, firebase_uid: req["firebase_uid"] },
   });
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
-  res.send(await repository.findOne(userId));
+  res.send(updatedUser);
 };
 
 export const UpdatePassword = async (req: Request, res: Response) => {
