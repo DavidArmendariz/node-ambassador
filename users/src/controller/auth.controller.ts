@@ -7,7 +7,7 @@ import { encrypt } from "../utils/utils";
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
   const user_id = req["user_database_id"];
-  const user = await AppDataSource.getRepository(User).find({
+  const user = await AppDataSource.getRepository(User).findOne({
     where: {
       id: user_id,
     },
