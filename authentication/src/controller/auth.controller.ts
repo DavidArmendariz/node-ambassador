@@ -22,8 +22,8 @@ export const Login = async (req: Request, res: Response) => {
     const response = await axios.post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`,
       {
-        email: email,
-        password: password,
+        email,
+        password,
         returnSecureToken: true,
       }
     );
@@ -41,6 +41,7 @@ export const Login = async (req: Request, res: Response) => {
     }
 
     // Generate JWT token
+
     const token = sign(
       { id: user_database_id, scope: adminLogin ? "admin" : "ambassador" },
       process.env.JWT_SECRET,

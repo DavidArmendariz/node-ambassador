@@ -11,7 +11,6 @@ const PORT = process.env.API_GATEWAY_PORT;
 const app = express();
 
 app.use(cookieParser());
-app.use(express.json());
 app.use(
   cors({
     credentials: true,
