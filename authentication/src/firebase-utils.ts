@@ -48,3 +48,22 @@ export const updateFirebaseUserPassword = async ({
     console.error("Error updating user password:", error.message);
   }
 };
+
+export const updateDisplayName = async ({
+  uid,
+  firstName,
+  lastName,
+}: {
+  uid: string;
+  firstName: string;
+  lastName: string;
+}) => {
+  try {
+    const userRecord = await firebaseApp.auth().updateUser(uid, {
+      displayName: `${firstName} ${lastName}`,
+    });
+    console.log("Successfully updated user:", userRecord.displayName);
+  } catch (error) {
+    console.error("Error updating user:", error);
+  }
+};

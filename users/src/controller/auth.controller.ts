@@ -17,7 +17,6 @@ export const AuthenticatedUser = async (req: Request, res: Response) => {
 };
 
 export const Register = async (req: Request, res: Response) => {
-  console.log("Request", req.url);
   const { password, password_confirm, email, first_name, last_name } = req.body;
 
   if (password !== password_confirm) {
@@ -48,18 +47,18 @@ export const Register = async (req: Request, res: Response) => {
 };
 
 export const UpdateInfo = async (req: Request, res: Response) => {
-  const user_id = req["user_database_id"];
+  const userId = req["user_database_id"];
   const repository = AppDataSource.getRepository(User);
 
-  const user_update = await repository.update(user_id, req.body);
+  const userUpdate = await repository.update(userId, req.body);
 
   const value = JSON.stringify({
     event: "update",
-    user_data: user_update,
+    user_data: { ...userUpdate, firebase_uid: req["firebase_uid"] },
   });
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
-  res.send(await repository.findOne(user_id));
+  res.send(await repository.findOne(userId));
 };
 
 export const UpdatePassword = async (req: Request, res: Response) => {

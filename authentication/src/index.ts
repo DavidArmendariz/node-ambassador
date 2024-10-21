@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { kafkaConsumer } from "./kafka/config";
 import {
   registerFirebaseUser,
+  updateDisplayName,
   updateFirebaseUserPassword,
 } from "./firebase-utils";
 import { decrypt } from "./utils/utils";
@@ -48,6 +49,12 @@ const run = async () => {
             await updateFirebaseUserPassword({
               uid: data.user_data.firebase_uid,
               newPassword: decrypted_password,
+            });
+          } else if (data.event === "update") {
+            await updateDisplayName({
+              uid: data.user_data.firebase_uid,
+              firstName: data.user_data.first_name,
+              lastName: data.user_data.last_name,
             });
           }
         },
