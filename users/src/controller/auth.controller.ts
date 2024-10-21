@@ -6,7 +6,12 @@ import { kafkaProducer } from "../kafka/config";
 import { encrypt } from "../utils/utils";
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
-  const user = req["user"];
+  const user_id = req["user_database_id"];
+  const user = await AppDataSource.getRepository(User).find({
+    where: {
+      id: user_id,
+    },
+  });
 
   if (req.path === "/api/admin/user") {
     return res.send(user);
@@ -47,22 +52,22 @@ export const Register = async (req: Request, res: Response) => {
 };
 
 export const UpdateInfo = async (req: Request, res: Response) => {
-  const user = req["user"];
+  const user_id = req["user_database_id"];
   const repository = AppDataSource.getRepository(User);
 
-  await repository.update(user.id, req.body);
+  const user_update = await repository.update(user_id, req.body);
 
   const value = JSON.stringify({
     event: "update",
-    user_data: user,
+    user_data: user_update,
   });
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
-  res.send(await repository.findOne(user.id));
+  res.send(await repository.findOne(user_id));
 };
 
 export const UpdatePassword = async (req: Request, res: Response) => {
-  const user = req["user"];
+  const user_id = req["user_database_id"];
 
   if (req.body.password !== req.body.password_confirm) {
     return res.status(400).send({
@@ -70,7 +75,7 @@ export const UpdatePassword = async (req: Request, res: Response) => {
     });
   }
 
-  await AppDataSource.getRepository(User).update(user.id, {
+  const user_update = await AppDataSource.getRepository(User).update(user_id, {
     password: await bcryptjs.hash(req.body.password, 10),
   });
 
@@ -81,12 +86,12 @@ export const UpdatePassword = async (req: Request, res: Response) => {
 
   const value = JSON.stringify({
     event: "update",
-    user_data: { ...user, password: encrypted_password },
+    user_data: { ...user_update, password: encrypted_password },
   });
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
 
-  res.send(user);
+  res.send(user_update);
 };
 
 export const Ambassadors = async (req: Request, res: Response) => {
