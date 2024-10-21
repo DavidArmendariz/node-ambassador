@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { Product } from "../entity/product.entity";
 import { redisClient } from "../index";
+import _ from "lodash";
 
 export const Products = async (req: Request, res: Response) => {
   res.send(await getRepository(Product).find());
@@ -30,9 +31,11 @@ export const DeleteProduct = async (req: Request, res: Response) => {
 };
 
 export const ProductsFrontend = async (req: Request, res: Response) => {
-  let products = JSON.parse(await redisClient.get("products_frontend"));
+  let products: Product[] | null = JSON.parse(
+    await redisClient.get("products_frontend")
+  );
 
-  if (!products.length) {
+  if (_.isNull(products) || !products.length) {
     products = await getRepository(Product).find();
 
     await redisClient.set("products_frontend", JSON.stringify(products), {
@@ -44,11 +47,11 @@ export const ProductsFrontend = async (req: Request, res: Response) => {
 };
 
 export const ProductsBackend = async (req: Request, res: Response) => {
-  let products: Product[] = JSON.parse(
+  let products: Product[] | null = JSON.parse(
     await redisClient.get("products_frontend")
   );
 
-  if (!products.length) {
+  if (_.isNull(products) || !products.length) {
     products = await getRepository(Product).find();
 
     await redisClient.set("products_frontend", JSON.stringify(products), {

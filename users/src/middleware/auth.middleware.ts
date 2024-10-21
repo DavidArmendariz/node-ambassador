@@ -12,6 +12,7 @@ export const AuthMiddleware = async (
     const payload: any = verify(jwt, process.env.JWT_SECRET);
 
     if (!payload) {
+      console.error("No payload found");
       return res.status(401).send({
         message: "unauthenticated",
       });
@@ -33,6 +34,7 @@ export const AuthMiddleware = async (
 
     next();
   } catch (e) {
+    console.error("Error in AuthMiddleware", e);
     return res.status(401).send({
       message: "unauthenticated",
     });

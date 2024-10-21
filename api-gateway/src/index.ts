@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 dotenv.config();
@@ -10,7 +9,6 @@ const PORT = process.env.API_GATEWAY_PORT;
 
 const app = express();
 
-app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
@@ -61,6 +59,13 @@ app.use("/api/ambassador", (req, res, next) => {
     changeOrigin: true,
     pathRewrite: (path) => {
       return `/api/ambassador${path}`;
+    },
+    on: {
+      proxyReq: (proxyReq, req) => {
+        if (req.headers.cookie) {
+          proxyReq.setHeader("cookie", req.headers.cookie);
+        }
+      },
     },
   });
   return proxy(req, res, next);
