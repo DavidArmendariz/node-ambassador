@@ -27,7 +27,13 @@ app.use("/api/admin", (req, res, next) => {
   if (["/login", "/logout"].includes(req.path)) {
     target = process.env.AUTHENTICATION_SERVER;
   } else if (
-    ["/register", "/user", "/users/info", "/users/password"].includes(req.path)
+    [
+      "/register",
+      "/user",
+      "/users/info",
+      "/users/password",
+      "/ambassadors",
+    ].includes(req.path)
   ) {
     target = process.env.USERS_SERVER;
   }
