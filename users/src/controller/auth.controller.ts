@@ -13,10 +13,6 @@ export const AuthenticatedUser = async (req: Request, res: Response) => {
     },
   });
 
-  if (req.path === "/api/admin/user") {
-    return res.send(user);
-  }
-
   res.send(user);
 };
 
