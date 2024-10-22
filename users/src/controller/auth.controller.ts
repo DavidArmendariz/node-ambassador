@@ -31,6 +31,7 @@ export const Register = async (req: Request, res: Response) => {
     last_name,
     password: await bcryptjs.hash(password, 10),
     is_ambassador: req.path === "/api/ambassador/register",
+    id_token: null,
   });
 
   const encrypted_password = encrypt(password, process.env.ENCRYPTION_KEY);
@@ -41,6 +42,27 @@ export const Register = async (req: Request, res: Response) => {
   });
 
   delete user.password;
+
+  await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
+  res.send(user);
+};
+
+export const RegisterExternMethod = async (req: Request, res: Response) => {
+  const { idToken , email, first_name, last_name } = req.body;
+
+  const user = await AppDataSource.getRepository(User).save({
+    email,
+    first_name,
+    last_name,
+    password: null,
+    id_token: idToken
+    is_ambassador: req.path === "/api/ambassador/register",
+  });
+
+  const value = JSON.stringify({
+    event: "create_extern_method",
+    user_data: { ...user},
+  });
 
   await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
   res.send(user);

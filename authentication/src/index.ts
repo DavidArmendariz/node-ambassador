@@ -6,7 +6,7 @@ import {
   registerFirebaseUser,
   updateDisplayName,
   updateFirebaseUserPassword,
-} from "./firebase-utils";
+  updataUserId} from "./firebase-utils";
 import { decrypt } from "./utils/utils";
 
 dotenv.config();
@@ -56,6 +56,11 @@ const run = async () => {
               firstName: data.user_data.first_name,
               lastName: data.user_data.last_name,
             });
+          } else if (data.event === "create_extern_method") {
+              await updataUserId({
+                user_database_id: data.user_data.id
+                id_token: data.user_data.id_token,
+              })
           }
         },
       });

@@ -13,8 +13,9 @@ export class User {
 
   @Column({
     unique: true,
+    nullable: true,
   })
-  email: string;
+  email: string | null;
 
   @Column({
     select: false,
@@ -23,6 +24,11 @@ export class User {
 
   @Column()
   is_ambassador: boolean;
+
+  @Column({
+    nullable: true,
+  })
+  id_token: string | null;
 
   get name(): string {
     return this.first_name + " " + this.last_name;

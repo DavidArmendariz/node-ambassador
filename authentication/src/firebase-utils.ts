@@ -67,3 +67,23 @@ export const updateDisplayName = async ({
     console.error("Error updating user:", error);
   }
 };
+
+export const updataUserId = async ({
+  id_token,
+  user_database_id,
+}: {
+  user_database_id: number;
+  id_token: string;
+}) => {
+  try {
+    const decodedToken = await firebaseApp.auth().verifyIdToken(id_token);
+
+    const claims = { user_database_id };
+    await firebaseApp.auth().setCustomUserClaims(decodedToken.uid, claims);
+  } catch (error) {
+    console.error(
+      "Error creating user or setting custom claims:",
+      error.message
+    );
+  }
+};
