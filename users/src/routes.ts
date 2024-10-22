@@ -12,7 +12,6 @@ import { AuthMiddleware } from "./middleware/auth.middleware";
 
 export const routes = (router: Router) => {
   router.post("/api/admin/register", Register);
-  router.post("/api/admin/register/extern", RegisterExternMethod);
   router.get("/api/admin/user", AuthMiddleware, AuthenticatedUser);
   router.put("/api/admin/users/info", AuthMiddleware, UpdateInfo);
   router.put("/api/admin/users/password", AuthMiddleware, UpdatePassword);
@@ -20,5 +19,6 @@ export const routes = (router: Router) => {
   router.put("/api/ambassador/users/info", AuthMiddleware, UpdateInfo);
   router.put("/api/ambassador/users/password", AuthMiddleware, UpdatePassword);
   router.post("/api/ambassador/register", Register);
+  router.post("/api/ambassador/register/extern", RegisterExternMethod);
   router.get("/api/admin/ambassadors", AuthMiddleware, Ambassadors);
 };
