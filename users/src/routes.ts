@@ -3,6 +3,7 @@ import {
   Ambassadors,
   AuthenticatedUser,
   Register,
+  RegisterExternMethod,
   UpdateInfo,
   UpdatePassword,
 } from "./controller/auth.controller";
@@ -11,6 +12,7 @@ import { AuthMiddleware } from "./middleware/auth.middleware";
 
 export const routes = (router: Router) => {
   router.post("/api/admin/register", Register);
+  router.post("/api/admin/register/extern", RegisterExternMethod);
   router.get("/api/admin/user", AuthMiddleware, AuthenticatedUser);
   router.put("/api/admin/users/info", AuthMiddleware, UpdateInfo);
   router.put("/api/admin/users/password", AuthMiddleware, UpdatePassword);
