@@ -67,6 +67,52 @@ export const Login = async (req: Request, res: Response) => {
   }
 };
 
+export const LoginExternal = async(req: Request, res: Response) => {
+  const { idToken } = req.body;
+
+  const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
+
+  try {
+    const { idToken } = response.data;
+    const decodedToken = await firebaseApp.auth().verifyIdToken(idToken);
+    const { is_ambassador, user_database_id, name, uid } = decodedToken;
+
+    //const userRecord = await admin.auth().getUser(uid);
+
+    const adminLogin = req.path === "/api/admin/login";
+
+    if (is_ambassador && adminLogin) {
+      return res.status(401).send({
+        message: "Unauthorized",
+      });
+    }
+
+    const token = sign(
+      {
+        id: user_database_id,
+        name,
+        scope: adminLogin ? "admin" : "ambassador",
+        uid,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.cookie("jwt", token, { httpOnly: true });
+    res.send({
+      message: "success",
+    });
+  } catch (error) {
+    console.error("Error logging in:", error.message);
+    res.status(401).send({
+      message: "Invalid credentials",
+    });
+  }
+
+}
+
 export const Logout = async (req: Request, res: Response) => {
   res.cookie("jwt", "", { maxAge: 0 });
   res.send({
