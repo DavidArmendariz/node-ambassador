@@ -128,9 +128,11 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 
   await repository.update(order.id, { complete: true });
 
-  const userName = req["user_name"];
-
-  await redisClient.zIncrBy("rankings", order.ambassador_revenue, userName);
+  await redisClient.zIncrBy(
+    "rankings",
+    order.ambassador_revenue,
+    `${order.first_name} ${order.last_name}`
+  );
 
   const value = JSON.stringify({
     ...order,
