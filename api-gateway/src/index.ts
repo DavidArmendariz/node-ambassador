@@ -22,16 +22,12 @@ app.use(
 
 app.use("/api/admin", (req, res, next) => {
   let target = process.env.AMBASSADOR_SERVER;
-  if (["/login", "/logout"].includes(req.path)) {
+  if (["/login", "/logout", "/user"].includes(req.path)) {
     target = process.env.AUTHENTICATION_SERVER;
   } else if (
-    [
-      "/register",
-      "/user",
-      "/users/info",
-      "/users/password",
-      "/ambassadors",
-    ].includes(req.path)
+    ["/register", "/users/info", "/users/password", "/ambassadors"].includes(
+      req.path
+    )
   ) {
     target = process.env.USERS_SERVER;
   }
@@ -54,10 +50,15 @@ app.use("/api/admin", (req, res, next) => {
 
 app.use("/api/ambassador", (req, res, next) => {
   let target = process.env.AMBASSADOR_SERVER;
-  if (["/login", "/loginExternal", "/logout"].includes(req.path)) {
+  if (["/login", "/loginExternal", "/logout", "/user"].includes(req.path)) {
     target = process.env.AUTHENTICATION_SERVER;
   } else if (
-    ["/register", "/register/extern", "/user", "/users/info", "/users/password"].includes(req.path)
+    [
+      "/register",
+      "/register/extern",
+      "/users/info",
+      "/users/password",
+    ].includes(req.path)
   ) {
     target = process.env.USERS_SERVER;
   }

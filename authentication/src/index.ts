@@ -9,6 +9,7 @@ import {
   updataUserId,
 } from "./firebase-utils";
 import { decrypt } from "./utils/utils";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 3702;
 
 const run = async () => {
   const app = express();
+  app.use(cookieParser());
   app.use(express.json());
 
   routes(app);

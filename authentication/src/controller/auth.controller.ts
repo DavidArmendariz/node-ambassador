@@ -48,6 +48,7 @@ export const Login = async (req: Request, res: Response) => {
         name,
         scope: adminLogin ? "admin" : "ambassador",
         uid,
+        email,
       },
       process.env.JWT_SECRET,
       {
@@ -67,12 +68,12 @@ export const Login = async (req: Request, res: Response) => {
   }
 };
 
-export const LoginExternal = async(req: Request, res: Response) => {
+export const LoginExternal = async (req: Request, res: Response) => {
   const { idToken } = req.body;
 
   try {
     const decodedToken = await firebaseApp.auth().verifyIdToken(idToken);
-    const { is_ambassador, user_database_id, name, uid } = decodedToken;
+    const { is_ambassador, user_database_id, name, uid, email } = decodedToken;
 
     const adminLogin = req.path === "/api/admin/login";
 
@@ -90,6 +91,7 @@ export const LoginExternal = async(req: Request, res: Response) => {
         name,
         scope: adminLogin ? "admin" : "ambassador",
         uid,
+        email,
       },
       process.env.JWT_SECRET,
       {
@@ -107,12 +109,16 @@ export const LoginExternal = async(req: Request, res: Response) => {
       message: "Invalid credentials",
     });
   }
-
-}
+};
 
 export const Logout = async (req: Request, res: Response) => {
   res.cookie("jwt", "", { maxAge: 0 });
   res.send({
     message: "success",
   });
+};
+
+export const AuthenticatedUser = async (req: Request, res: Response) => {
+  const user = req["user"];
+  res.send(user);
 };

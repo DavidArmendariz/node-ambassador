@@ -5,17 +5,6 @@ import { AppDataSource } from "../../data-source";
 import { kafkaProducer } from "../kafka/config";
 import { encrypt } from "../utils/utils";
 
-export const AuthenticatedUser = async (req: Request, res: Response) => {
-  const user_id = req["user_database_id"];
-  const user = await AppDataSource.getRepository(User).findOne({
-    where: {
-      id: user_id,
-    },
-  });
-
-  res.send(user);
-};
-
 export const Register = async (req: Request, res: Response) => {
   const { password, password_confirm, email, first_name, last_name } = req.body;
 
