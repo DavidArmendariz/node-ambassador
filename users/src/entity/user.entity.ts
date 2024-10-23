@@ -13,17 +13,19 @@ export class User {
 
   @Column({
     unique: true,
-    nullable: true,
+    
   })
-  email: string | null;
+  email: string;
 
   @Column({
     select: false,
+    nullable: true,
   })
-  password: string;
+  password: string | null;
 
   @Column()
   is_ambassador: boolean;
+  
 
   @Column({
     nullable: true,

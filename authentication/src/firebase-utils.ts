@@ -69,17 +69,15 @@ export const updateDisplayName = async ({
 };
 
 export const updataUserId = async ({
-  id_token,
   user_database_id,
+  id_token,
 }: {
-  user_database_id: number;
   id_token: string;
+  user_database_id: number;
 }) => {
   try {
-    const decodedToken = await firebaseApp.auth().verifyIdToken(id_token);
-
     const claims = { user_database_id };
-    await firebaseApp.auth().setCustomUserClaims(decodedToken.uid, claims);
+    await firebaseApp.auth().setCustomUserClaims(id_token, claims);
   } catch (error) {
     console.error(
       "Error creating user or setting custom claims:",

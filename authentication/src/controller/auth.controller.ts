@@ -70,14 +70,9 @@ export const Login = async (req: Request, res: Response) => {
 export const LoginExternal = async(req: Request, res: Response) => {
   const { idToken } = req.body;
 
-  const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
-
   try {
-    const { idToken } = response.data;
     const decodedToken = await firebaseApp.auth().verifyIdToken(idToken);
     const { is_ambassador, user_database_id, name, uid } = decodedToken;
-
-    //const userRecord = await admin.auth().getUser(uid);
 
     const adminLogin = req.path === "/api/admin/login";
 
@@ -86,6 +81,8 @@ export const LoginExternal = async(req: Request, res: Response) => {
         message: "Unauthorized",
       });
     }
+
+    // Generate JWT token
 
     const token = sign(
       {

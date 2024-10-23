@@ -55,7 +55,7 @@ export const RegisterExternMethod = async (req: Request, res: Response) => {
     first_name,
     last_name,
     password: null,
-    id_token: idToken
+    id_token: idToken,
     is_ambassador: req.path === "/api/ambassador/register",
   });
 

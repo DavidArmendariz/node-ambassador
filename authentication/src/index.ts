@@ -58,9 +58,10 @@ const run = async () => {
             });
           } else if (data.event === "create_extern_method") {
               await updataUserId({
-                user_database_id: data.user_data.id
+                user_database_id: data.user_data.id,
                 id_token: data.user_data.id_token,
               })
+            
           }
         },
       });
