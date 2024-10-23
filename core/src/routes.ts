@@ -30,7 +30,7 @@ export const routes = (router: Router) => {
   router.get("/api/admin/products/:id", AuthMiddleware, GetProduct);
   router.put("/api/admin/products/:id", AuthMiddleware, UpdateProduct);
   router.delete("/api/admin/products/:id", AuthMiddleware, DeleteProduct);
-  router.get("/api/admin/users/:id/links", AuthMiddleware, Links);
+  router.get("/api/admin/users/links/:id", AuthMiddleware, Links);
   router.get("/api/admin/orders", AuthMiddleware, Orders);
 
   // Ambassador

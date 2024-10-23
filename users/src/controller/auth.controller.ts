@@ -44,7 +44,7 @@ export const RegisterExternMethod = async (req: Request, res: Response) => {
     last_name,
     password: null,
     firebase_uid,
-    is_ambassador: req.path === "/api/ambassador/register",
+    is_ambassador: req.path === "/api/ambassador/register/extern",
   });
 
   const value = JSON.stringify({
