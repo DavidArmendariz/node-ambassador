@@ -5,7 +5,7 @@ import { Link } from "../entity/link.entity";
 export const Links = async (req: Request, res: Response) => {
   const links = await getRepository(Link).find({
     where: {
-      user: req.params.id,
+      user_id: req.params.id,
     },
     relations: ["orders", "orders.order_items"],
   });

@@ -38,13 +38,24 @@ export const Register = async (req: Request, res: Response) => {
 export const RegisterExternMethod = async (req: Request, res: Response) => {
   const { firebase_uid, email, first_name, last_name } = req.body;
 
+  const existingUser = await AppDataSource.getRepository(User).findOne({
+    where: [{ email }, { firebase_uid }],
+  });
+
+  if (existingUser) {
+    return res.status(200).json({
+      message: "User already exists",
+      user: existingUser,
+    });
+  }
+
   const user = await AppDataSource.getRepository(User).save({
     email,
     first_name,
     last_name,
     password: null,
     firebase_uid,
-    is_ambassador: req.path === "/api/ambassador/register",
+    is_ambassador: req.path === "/api/ambassador/register/extern",
   });
 
   const value = JSON.stringify({
