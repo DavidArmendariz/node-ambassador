@@ -148,7 +148,7 @@ export const ConfirmOrder = async (req: Request, res: Response) => {
 };
 
 export const GetAmbassadorRevenue = async (req: Request, res: Response) => {
-  const userId = req["user_id"];
+  const userId = req["user_database_id"];
   const ordersRepository = getRepository(Order);
   const orders = await ordersRepository.find({
     where: {
