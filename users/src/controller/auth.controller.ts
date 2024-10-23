@@ -48,14 +48,14 @@ export const Register = async (req: Request, res: Response) => {
 };
 
 export const RegisterExternMethod = async (req: Request, res: Response) => {
-  const { idToken , email, first_name, last_name } = req.body;
+  const { firebase_uid , email, first_name, last_name } = req.body;
 
   const user = await AppDataSource.getRepository(User).save({
     email,
     first_name,
     last_name,
     password: null,
-    firebase_uid: idToken,
+    id_token: firebase_uid,
     is_ambassador: req.path === "/api/ambassador/register",
   });
 
