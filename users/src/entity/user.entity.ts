@@ -13,7 +13,6 @@ export class User {
 
   @Column({
     unique: true,
-    
   })
   email: string;
 
@@ -25,12 +24,12 @@ export class User {
 
   @Column()
   is_ambassador: boolean;
-  
 
   @Column({
     nullable: true,
+    default: null,
   })
-  id_token: string | null;
+  firebase_uid: string | null;
 
   get name(): string {
     return this.first_name + " " + this.last_name;
