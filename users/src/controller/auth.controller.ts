@@ -46,6 +46,27 @@ export const Register = async (req: Request, res: Response) => {
   res.send(user);
 };
 
+export const RegisterExternMethod = async (req: Request, res: Response) => {
+  const { firebase_uid, email, first_name, last_name } = req.body;
+
+  const user = await AppDataSource.getRepository(User).save({
+    email,
+    first_name,
+    last_name,
+    password: null,
+    firebase_uid,
+    is_ambassador: req.path === "/api/ambassador/register",
+  });
+
+  const value = JSON.stringify({
+    event: "create_extern_method",
+    user_data: user,
+  });
+
+  await kafkaProducer.send({ topic: "authentication", messages: [{ value }] });
+  res.send(user);
+};
+
 export const UpdateInfo = async (req: Request, res: Response) => {
   const userId = req["user_database_id"];
   const repository = AppDataSource.getRepository(User);

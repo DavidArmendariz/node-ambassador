@@ -18,11 +18,18 @@ export class User {
 
   @Column({
     select: false,
+    nullable: true,
   })
-  password: string;
+  password: string | null;
 
   @Column()
   is_ambassador: boolean;
+
+  @Column({
+    nullable: true,
+    default: null,
+  })
+  firebase_uid: string | null;
 
   get name(): string {
     return this.first_name + " " + this.last_name;
