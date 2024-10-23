@@ -22,13 +22,7 @@ app.use(
 
 app.use("/api/admin", (req, res, next) => {
   let target = process.env.AMBASSADOR_SERVER;
-  if (["/user/links"].includes(
-      req.path
-    )
-  ) {
-    target = process.env.AMBASSADOR_SERVER;
-  }
-  else if (["/login", "/logout", "/user"].includes(req.path)) {
+  if (["/login", "/logout", "/user"].includes(req.path)) {
     target = process.env.AUTHENTICATION_SERVER;
   } else if (
     ["/register", "/users/info", "/users/password", "/ambassadors"].includes(
@@ -36,8 +30,6 @@ app.use("/api/admin", (req, res, next) => {
     )
   ) {
     target = process.env.USERS_SERVER;
-    console.log('Acaa');
-    console.log(target);
   }
   const proxy = createProxyMiddleware({
     target,
