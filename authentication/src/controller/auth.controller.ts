@@ -58,8 +58,8 @@ export const Login = async (req: Request, res: Response) => {
 
     res.cookie("jwt", token, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : undefined,
+      secure: process.env.NODE_ENV === "production",
     });
     res.send({
       message: "success",
@@ -103,11 +103,13 @@ export const LoginExternal = async (req: Request, res: Response) => {
       }
     );
 
-    res.cookie("jwt", token, { httpOnly: true });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : undefined,
+      secure: process.env.NODE_ENV === "production",
+    });
     res.send({
       message: "success",
-      sameSite: "none",
-      secure: true,
     });
   } catch (error) {
     console.error("Error logging in:", error.message);
