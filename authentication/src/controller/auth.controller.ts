@@ -120,7 +120,11 @@ export const LoginExternal = async (req: Request, res: Response) => {
 };
 
 export const Logout = async (req: Request, res: Response) => {
-  res.cookie("jwt", "", { maxAge: 0 });
+  res.cookie("jwt", "", {
+    maxAge: 0,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : undefined,
+    secure: process.env.NODE_ENV === "production",
+  });
   res.send({
     message: "success",
   });
