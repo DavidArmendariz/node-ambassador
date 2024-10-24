@@ -3,3 +3,6 @@ services:
     build: .
     ports:
       - "3703:3703"
+    volumes:
+      - .:/app
+      - /app/node_modules
