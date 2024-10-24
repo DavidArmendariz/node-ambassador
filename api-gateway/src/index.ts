@@ -5,7 +5,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 
 dotenv.config();
 
-const PORT = process.env.API_GATEWAY_PORT || 3703;
+const PORT = process.env.PORT || 3703;
 
 const app = express();
 
