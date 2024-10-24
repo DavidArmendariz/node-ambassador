@@ -19,7 +19,7 @@ const kafka = new Kafka({
 const kafkaConsumer = kafka.consumer({ groupId: "email-consumer" });
 
 const transporter = createTransport({
-  host: "host.docker.internal",
+  host: "172.17.0.1", // IP de docker, también se puede usar host.docker.internal
   port: 1025,
 });
 
