@@ -19,7 +19,7 @@ services:
       - node_users_dbdata:/var/lib/mysql
     ports:
       - "7082:3306"
-    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+    command: --bind-address=0.0.0.0
 
 volumes:
   node_users_dbdata:
