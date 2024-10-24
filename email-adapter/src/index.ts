@@ -16,7 +16,11 @@ const kafka = new Kafka({
   connectionTimeout: 10000,
 });
 
-const kafkaConsumer = kafka.consumer({ groupId: "email-consumer" });
+const kafkaConsumer = kafka.consumer({
+  groupId: "email-consumer",
+  heartbeatInterval: 10000,
+  sessionTimeout: 60000,
+});
 
 const transporter = createTransport({
   host: "172.17.0.1", // IP de docker, también se puede usar host.docker.internal

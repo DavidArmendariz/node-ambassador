@@ -15,4 +15,8 @@ const kafka = new Kafka({
   connectionTimeout: 10000,
 });
 
-export const kafkaConsumer = kafka.consumer({ groupId: "auth-consumer" });
+export const kafkaConsumer = kafka.consumer({
+  groupId: "auth-consumer",
+  heartbeatInterval: 10000,
+  sessionTimeout: 60000,
+});
